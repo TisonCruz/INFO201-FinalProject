@@ -2,26 +2,27 @@
 library(shiny)
 library(tidyverse)
 
-#scores <- read_delim("df.csv") %>% 
-#mutate(newRegion = factor(Region)) %>% 
-#  rename(Admission_Rate = "Admission Rate")
-#head(scores)
-#region <- unique(scores$Region)
+score <- read_delim("df.csv") %>%
+  mutate(newRegion = factor(Region)) %>%
+  rename(Admission_Rate = "Admission Rate") 
+head(score)
+region <- unique(score$Region)
+states <- unique(score$State)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("U.S College and University Admissions and SAT & ACT Scores"),
-
-    # Sidebar with a slider input for number of bins 
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Introduction",
-                 tags$img(src="hp-gallery-red-squareC-16x12.jpg"),
-                 mainPanel(
-                   h1("Project Overview"),
-                   p("Has COVID-19 impacted the importance of SAT scores within
+  
+  # Application title
+  titlePanel("US University & College Admissions and SAT & ACT scores"),
+  
+  mainPanel(
+    tabsetPanel(
+      # Introduction tab with brief information about the purpose of the app and dataset 
+      tabPanel("Introduction",
+               tags$img(src="hp-gallery-red-squareC-16x12.jpg"),
+               mainPanel(
+                 h1("Project Overview"),
+                 p("Has COVID-19 impacted the importance of SAT scores within
                       college admissions in the U.S? Due to quarantine lockdown,
                       many students across the country were forced to halt their
                       in person classes and exams. This created a lot of stress 
@@ -35,8 +36,8 @@ ui <- fluidPage(
                       Specifically, we are trying to show how some schools are 
                       moving away from SAT scores and how it has less prevalence
                       than it used to."),
-                   h2("Audience"),
-                   p("Our main target audience would be students who are
+                 h2("Audience"),
+                 p("Our main target audience would be students who are
                       planning to apply for universities/colleges. This
                       information allows them to gain more knowledge on the
                       correlation between SAT/ACT scores and admission rate,
@@ -46,38 +47,146 @@ ui <- fluidPage(
                       about the number of applicants received, enrollment, and
                       the SAT/ACT scores of their potential students, which can
                       influence their admissions decisions."),
-                   h3("Data Source"),
-                   p("The data that the report refers to is the",
-                     a("Kaggle US College & University Admissions 2020-2021", href='https://www.kaggle.com/datasets/jfschultz/us-college-admisions-2021-rates-and-test-scores'),
-                     "database. This
+                 h3("Data Source"),
+                 p("The data that the report refers to is the",
+                   a("Kaggle US College & University Admissions 2020-2021", href='https://www.kaggle.com/datasets/jfschultz/us-college-admisions-2021-rates-and-test-scores'),
+                   "database. This
                    dataset provides the broad overview of U.S admissions for
                    each college/university per state."),
-                   h4("Plots & Table"),
-                   p("The four plots that we have created intend to show the
+                 h4("Plots & Table"),
+                 p("The four plots that we have created intend to show the
                       relationship of the math/verbal SAT and ACT scores and
                       admissions rate by region. The table intends to compare
-                      the two plots.")
-                 ))
-      )
-    ),
-)
-# Main/Home Page ^
-
+                      the two plots."))
+      ),
+      # Scatter plots showing SAT verbal and math score for each region
+      tabPanel("SAT Plot",
+               sidebarPanel(
+                 # Can change the score range users want to view on the scatter plot
+                 sliderInput("SAT_Range",
+                             "What range of SAT plot: ",
+                             min = 0,
+                             max = 800,
+                             value = c(0,800)
+                 ),
+                 # Can choose the region users want to plot on scatter plot
+                 checkboxGroupInput("Regionsat",
+                                    "Choose which region(s) to plot:",
+                                    choices = region, 
+                                    selected = region
+                                    
+                 )
+               ),
+               mainPanel(
+                 #scatter plot 
+                 plotOutput("satploteng"),
+                 plotOutput("satplotmath")
+               )
+               
+      ),
+      tabPanel("ACT Plot",
+               sidebarPanel(
+                 # Can change the score range users want to view on the scatter plot
+                 sliderInput("ACT_Range",
+                             "What range of ACT plot: ",
+                             min = 0,
+                             max = 36,
+                             value = c(0,36)
+                 )
+                 # Can choose the region users want to plot on scatter plot
+                 ,checkboxGroupInput("Regionact",
+                                     "Choose which region(s) to plot:",
+                                     choices = region, 
+                                     selected = region
+                 )
+               ),
+               mainPanel(
+                 #scatter plot
+                 plotOutput("actploteng"),
+                 plotOutput("actplotmath")
+               )
+      ),
+      tabPanel("Table",
+               sidebarPanel(
+                 # choose which state to view for average score for each standardized test and subject
+                 selectInput("State", "Select State:",
+                             choices = states
+                 ),
+               ),
+               mainPanel(dataTableOutput("table"),
+                         textOutput("sentence"))
+      ),
+      
+    )))
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  
+  # SAT verbal scatter plot
+  output$satploteng <- renderPlot({
+    score %>%
+      filter(newRegion %in% input$Regionsat) %>%
+      filter(SATVR75 >= input$SAT_Range[1],
+             SATVR75 <= input$SAT_Range[2]) %>%
+      ggplot(aes(SATVR75, Admission_Rate, col = newRegion)) +
+      labs(title = "75th Percentile SAT English Score and Admissions Rate",
+           x = "75th Percentile SAT English Score", y= "Admission Rate") +
+      geom_point()
+  })
+  # SAT math scatter plot
+  output$satplotmath <- renderPlot({
+    score %>%
+      filter(newRegion %in% input$Regionsat) %>%
+      filter(SATMT75 >= input$SAT_Range[1],
+             SATMT75 <= input$SAT_Range[2]) %>%
+      ggplot(aes(SATVR75, Admission_Rate, col = newRegion)) +
+      labs(title = "75th Percentile SAT Math Score and Admissions Rate",
+           x = "75th Percentile SAT Math Score", y= "Admission Rate") +
+      geom_point()
+  })
+  
+  #ACT english scatter plot
+  output$actploteng <- renderPlot({
+    score %>%
+      filter(newRegion %in% input$Regionact) %>%
+      filter(ACTEN75 >= input$ACT_Range[1],
+             ACTEN75 <= input$ACT_Range[2]) %>%
+      ggplot(aes(ACTEN75, Admission_Rate, col = newRegion)) +
+      labs(title = "75th Percentile ACT English Score and Admissions Rate",
+           x = "75th Percentile ACT English Score", y= "Admission Rate") +
+      geom_point() 
+  })
+  
+  #ACT math scatter plot
+  output$actplotmath <- renderPlot({
+    score %>%
+      filter(newRegion %in% input$Regionact) %>%
+      filter(ACTMT75 >= input$ACT_Range[1],
+             ACTMT75 <= input$ACT_Range[2]) %>%
+      ggplot(aes(ACTMT75, Admission_Rate, col = newRegion)) +
+      labs(title = "75th Percentile ACT Math Score and Admissions Rate",
+           x = "75th Percentile ACT Math Score", y= "Admission Rate") +
+      geom_point()
+  })
+  
+  #Average score for each subject and standardized test for each state
+  output$table <- renderDataTable({
+    score %>%
+      group_by(input$State) %>%
+      filter(!is.na(SATVR75), !is.na(SATMT75), !is.na(ACTEN75), !is.na(ACTMT75), State == input$State) %>%
+      summarize(avg_SAT_MT = mean(SATMT75), avg_SAT_VR = mean(SATVR75), avg_ACT_MT = mean(ACTMT75), avg_ACT_EN = mean(ACTEN75)) 
+  })
+  
+  #sentence that summarizes the score for chosen state
+  output$sentence <- renderText({
+    scoreavg <- score %>%
+      group_by(input$State) %>%
+      filter(State == input$State, !is.na(SATVR75), !is.na(SATMT75), !is.na(ACTEN75), !is.na(ACTMT75)) %>%
+      summarize(avg_SAT_MT = mean(SATMT75), avg_SAT_VR = mean(SATVR75), avg_ACT_MT = mean(ACTMT75), avg_ACT_EN = mean(ACTEN75))
+    paste("The SAT verbal & math and ACT math and english score for", scoreavg[1], "are", scoreavg[2],",", scoreavg[3],",", scoreavg[4],"and",scoreavg[5], "respectively." )
+    
+  })
 }
 
 # Run the application 
