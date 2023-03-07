@@ -13,15 +13,16 @@ states <- unique(score$State)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("US University & College Admissions and SAT & ACT scores"),
+  titlePanel("US University & College Admissions and SAT & ACT Scores"),
   
   mainPanel(
     tabsetPanel(
       # Introduction tab with brief information about the purpose of the app and dataset 
       tabPanel("Introduction",
-               tags$img(src="hp-gallery-red-squareC-16x12.jpg"),
                mainPanel(
-                 h1("Project Overview"),
+                 # Add image to intro page
+                 imageOutput("Image"),
+                 h2("Project Overview"),
                  p("Has COVID-19 impacted the importance of SAT scores within
                       college admissions in the U.S? Due to quarantine lockdown,
                       many students across the country were forced to halt their
@@ -36,7 +37,7 @@ ui <- fluidPage(
                       Specifically, we are trying to show how some schools are 
                       moving away from SAT scores and how it has less prevalence
                       than it used to."),
-                 h2("Audience"),
+                 h3("Audience"),
                  p("Our main target audience would be students who are
                       planning to apply for universities/colleges. This
                       information allows them to gain more knowledge on the
@@ -53,7 +54,7 @@ ui <- fluidPage(
                    "database. This
                    dataset provides the broad overview of U.S admissions for
                    each college/university per state."),
-                 h4("Plots & Table"),
+                 h3("Plots & Table"),
                  p("The four plots that we have created intend to show the
                       relationship of the math/verbal SAT and ACT scores and
                       admissions rate by region. The table intends to compare
@@ -61,6 +62,7 @@ ui <- fluidPage(
       ),
       # Scatter plots showing SAT verbal and math score for each region
       tabPanel("SAT Plot",
+               h3("Admissions Rate with SAT Math and English Scores"),
                sidebarPanel(
                  # Can change the score range users want to view on the scatter plot
                  sliderInput("SAT_Range",
@@ -85,6 +87,7 @@ ui <- fluidPage(
                
       ),
       tabPanel("ACT Plot",
+               h3("Admissions Rate with ACT Math and English Scores"),
                sidebarPanel(
                  # Can change the score range users want to view on the scatter plot
                  sliderInput("ACT_Range",
@@ -107,6 +110,7 @@ ui <- fluidPage(
                )
       ),
       tabPanel("Table",
+               h3("Average SAT and ACT Scores in Each U.S. State"),
                sidebarPanel(
                  # choose which state to view for average score for each standardized test and subject
                  selectInput("State", "Select State:",
@@ -119,13 +123,23 @@ ui <- fluidPage(
       
       tabPanel("Conclusion",
                h3("Patterns and Discoveries"),
-               p("[put text here]"),
+               p("Based on the plots and table that we have computed, we can conclude that there is 
+                 a significant correlation between whether SAT/ACT scores influence admission rates."),
                
                h4("Example"),
-               p("[put text here]"),
+               p("In general, looking at the overall trend of the scatterplots in both the SAT and 
+                    ACT graphs (with all the regions checked), the dots start to decrease and appear more 
+                    sparsely as the score number gets higher."), 
+               p("More specifically, when all the regions are ticked in the SAT and ACT graphs, we can see 
+                    that both Southeast (purple) and Mid East (army green) are more populated in the middle of 
+                    the plot (around the 600 score), but as it approaches the maximum (800), there are slightly 
+                    more Mid East dots compared to Southeast or any other region."),
                
                h3("Implications of Insight"),
-               p("[put text here"),
+               p("This pattern implies that schools in the Mid East that have low acceptance rates 
+                      admit students with near perfect SAT or ACT scores. This makes sense, as most 
+                      IVY league institutions which are known to be highly selective and competitive with the 
+                      lowest admission rates are located in the Mid East of the US."),
                
                h3("Data Quality"),
                p("The dataset included a number of variables and observations that allowed 
@@ -164,6 +178,11 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  #image for first page
+  output$Image <- renderImage({
+    list(src = "picture.jpg", width = "600", height = "300")
+  })
   
   # SAT verbal scatter plot
   output$satploteng <- renderPlot({
