@@ -31,7 +31,7 @@ ui <- fluidPage(
                       part of the admission process, many universities went 
                       test-optional in order to “reduce the demand on students”,
                       according to collegeboard. This report provides the 
-                      relationship between math/verbal SAT and ACTscores and the
+                      relationship between math/verbal SAT and ACT scores and the
                       admission rate in colleges and universities in the U.S.
                       Specifically, we are trying to show how some schools are 
                       moving away from SAT scores and how it has less prevalence
@@ -116,6 +116,48 @@ ui <- fluidPage(
                mainPanel(dataTableOutput("table"),
                          textOutput("sentence"))
       ),
+      
+      tabPanel("Conclusion",
+               h3("Patterns and Discoveries"),
+               p("[put text here]"),
+               
+               h4("Example"),
+               p("[put text here]"),
+               
+               h3("Implications of Insight"),
+               p("[put text here"),
+               
+               h3("Data Quality"),
+               p("The dataset included a number of variables and observations that allowed 
+                           us to deliver more features to feed into the data. We were able to access and 
+                           use more data assets that led us to make versatile plots and tables, which 
+                           helped to show and provide detailed results."),
+               p("The dataset was gathered from a national center for education statistics, 
+                             who are the primary federal entity responsible for collecting and analyzing 
+                             data related to education in the United States. They also go through the 
+                             process of conducting, publishing and reviewing data, however, there could be 
+                             some limitations to the data that is presented as it comes from people who created 
+                             and manipulated these datasets."),
+               p("The dataset does include content that was produced by humans, which could 
+                           potentially contain biased information against groups of people. However, the 
+                           source that we gathered our data from uses “restricted-data” licenses as a way to 
+                           make more detailed information available, which could eliminate a few aspects of 
+                          data bias."),
+               
+               h3("Future Ideas"),
+               p("As the controversial debate around whether standardized test scores should be used 
+                           to determine students’ college admission increases, some universities are making SAT/ACT 
+                           scores optional (especially after the COVID pandemic) and shifting their focus on other 
+                           attributes of the student. That being said, a future idea to advance this project is to 
+                           record data of universities that have SAT/ACT scores optional and see how the admissions 
+                           rate compares against schools that require SAT/ACT scores. This could possibly generate 
+                           interesting outcomes as to how college admissions requirements are changing over the years."),
+               p("Another idea could be to collect data of the main categories (grades, personal statements, 
+                           SAT/ACT scores, demographics, income, etc.) universities look for in prospective students, 
+                           and rank them from “most considered during admission” to “least considered during admission” 
+                           for each of the universities. With this information, applicants can take into consideration 
+                           what college admissions are seeking the most and better prepare for their application.")
+      )
       
     )))
 
