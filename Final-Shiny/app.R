@@ -13,7 +13,7 @@ states <- unique(score$State)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("US University & College Admissions and SAT & ACT scores"),
+  titlePanel("US University & College Admissions and SAT & ACT Scores"),
   
   mainPanel(
     tabsetPanel(
@@ -21,7 +21,7 @@ ui <- fluidPage(
       tabPanel("Introduction",
                tags$img(src="hp-gallery-red-squareC-16x12.jpg"),
                mainPanel(
-                 h1("Project Overview"),
+                 h2("Project Overview"),
                  p("Has COVID-19 impacted the importance of SAT scores within
                       college admissions in the U.S? Due to quarantine lockdown,
                       many students across the country were forced to halt their
@@ -36,7 +36,7 @@ ui <- fluidPage(
                       Specifically, we are trying to show how some schools are 
                       moving away from SAT scores and how it has less prevalence
                       than it used to."),
-                 h2("Audience"),
+                 h3("Audience"),
                  p("Our main target audience would be students who are
                       planning to apply for universities/colleges. This
                       information allows them to gain more knowledge on the
@@ -53,7 +53,7 @@ ui <- fluidPage(
                    "database. This
                    dataset provides the broad overview of U.S admissions for
                    each college/university per state."),
-                 h4("Plots & Table"),
+                 h3("Plots & Table"),
                  p("The four plots that we have created intend to show the
                       relationship of the math/verbal SAT and ACT scores and
                       admissions rate by region. The table intends to compare
@@ -61,6 +61,7 @@ ui <- fluidPage(
       ),
       # Scatter plots showing SAT verbal and math score for each region
       tabPanel("SAT Plot",
+               h3("Admissions Rate with SAT Math and English Scores"),
                sidebarPanel(
                  # Can change the score range users want to view on the scatter plot
                  sliderInput("SAT_Range",
@@ -85,6 +86,7 @@ ui <- fluidPage(
                
       ),
       tabPanel("ACT Plot",
+               h3("Admissions Rate with ACT Math and English Scores"),
                sidebarPanel(
                  # Can change the score range users want to view on the scatter plot
                  sliderInput("ACT_Range",
@@ -107,6 +109,7 @@ ui <- fluidPage(
                )
       ),
       tabPanel("Table",
+               h3("Average SAT and ACT Scores in Each U.S. State"),
                sidebarPanel(
                  # choose which state to view for average score for each standardized test and subject
                  selectInput("State", "Select State:",
