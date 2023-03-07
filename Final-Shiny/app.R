@@ -19,8 +19,9 @@ ui <- fluidPage(
     tabsetPanel(
       # Introduction tab with brief information about the purpose of the app and dataset 
       tabPanel("Introduction",
-               tags$img(src="hp-gallery-red-squareC-16x12.jpg"),
                mainPanel(
+                 # Add image to intro page
+                 imageOutput("Image"),
                  h2("Project Overview"),
                  p("Has COVID-19 impacted the importance of SAT scores within
                       college admissions in the U.S? Due to quarantine lockdown,
@@ -167,6 +168,11 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  #image for first page
+  output$Image <- renderImage({
+    list(src = "picture.jpg", width = "600", height = "300")
+  })
   
   # SAT verbal scatter plot
   output$satploteng <- renderPlot({
